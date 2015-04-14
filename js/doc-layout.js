@@ -1,6 +1,16 @@
 ---
-layout: nil
+layout: null 
 ---
+
+
+function createLinkList(headingStr, elementId) {
+  var listItems = "";  
+  $('#pageContent').children(headingStr).each(function() {
+    listItems += '<li><a href="#'+this.id+'">'+$(this).text()+'</a></li>';
+  });
+
+  $("#" + elementId).html(listItems);
+}
 
 $(function () {
 
@@ -27,38 +37,7 @@ $(function () {
     $(this).tab('show');
   });
 
-  summary_html = "";
-  $('#pageContent').children('h1').slice(1).each(function(index, item) {
-    summary_html += '<li><a href="#'+item.id+'">'+item.innerHTML+'</a></li>';
-  });
-
-  $("#summarypanel").html(summary_html);
-
-  /*
-  if (!$.isEmptyObject(tocheaders)) {
-    $.each(tocheaders, function(tocindex, tocvalue) {
-      toc_url = "";
-      $("#" + tocindex).children(tocvalue).each(function(index, item) {
-        toc_url += '<li><a href="#'+item.id+'">'+item.innerHTML+'</a></li>';
-      });
-
-      $("#toczone-top" + tocindex +",#toczone-bot" + tocindex).html(toc_url);
-
-    });
-  }
-
-  if (!$.isEmptyObject(tocheadersz)) {
-    $.each(tocheadersz, function(tocindexz, tocvaluez) {
-      toc_urlz = "";
-      $(".col-md-9").children(tocvaluez).each(function(index, item) {
-        toc_urlz += '<li><a href="#'+item.id+'">'+item.innerHTML+'</a></li>';
-      });
-
-      $("#toczone-top" + tocindexz +",#toczone-bot" + tocindexz).html(toc_urlz);
-
-    });
-  }
-  */
+  
 
   if ($("#childrentree").length !== 0) {
     var childrentreeid = $("a:contains('" + $("title").text() +"')");
@@ -76,5 +55,48 @@ $(function () {
   }
 
 
+    var screenBigEnough = function() {
+        // Check if matchMedia exists
+        if (window.matchMedia) {
+            return window.matchMedia('(min-width: 768px)').matches;
+        } else {
+            return $(window).width() > 768;
+        }
+    }
 
+    var autoFitSidebar = function(){
+        if (screenBigEnough()) {
+            // Find the offset top of the bottom of the screen
+            var windowTop = $(window).scrollTop();
+            var footerTop = $('footer').offset().top;
+            var windowBottom = windowTop + $(window).height();
+
+            // Check if footer is in view
+            var isInView = (windowBottom >= footerTop);
+            var toolbar = $('.bt_wiki-tocspan');
+            if (isInView) {
+                var maxHeight = footerTop - windowTop - 139;
+                toolbar.css({
+                    'height' : maxHeight+'px'
+                });
+            } else {
+                toolbar.css({
+                    'height' : 'auto'
+                });
+
+            }
+        } else {
+            // Reset it all
+            var toolbar = $('.bt_wiki-tocspan');
+            toolbar.css({
+                'height' : 'auto'
+            });
+        }
+    }
+
+    $(window).scroll(function(){
+        autoFitSidebar();
+    });
+
+    autoFitSidebar();
 })
