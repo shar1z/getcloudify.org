@@ -1,4 +1,4 @@
-﻿---
+---
 layout: bt_default
 title: Загрузить Cloudify
 cat: Руководство пользователя
